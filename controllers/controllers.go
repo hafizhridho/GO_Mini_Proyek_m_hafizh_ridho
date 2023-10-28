@@ -2,12 +2,15 @@ package controllers
 
 import (
 	"latihan/configs"
+	"latihan/middleware"
 	"latihan/models"
 	"latihan/models/base"
+	"latihan/repositories"
 
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 
@@ -68,6 +71,35 @@ func Register(c echo.Context) error {
 	})
 }
 
-func Get(c echo.Context) error {
-    return c.JSON(http.StatusOK, nil)
+func Login(c echo.Context) error {
+	var user models.User
+	c.Bind(&user)
+	_ ,err := repositories.Login(user.Password, user.Email)
+
+	if err == gorm.ErrRecordNotFound {
+		return c.JSON(http.StatusBadRequest, base.BaseResponse{
+			Status: false,
+			Message: "email atau password tidak ada",
+			Data: nil,
+		})
+	}	else if err != nil {
+		c.JSON(http.StatusInternalServerError, base.BaseResponse{
+			Status: false,
+			Message: "gagal autentikasi ke database",
+			Data: nil,
+		})
+	}
+	
+    tokenResult := middleware.GenerateJWT(user.ID, user.Username)
+    var response models.AuthResponse
+    response.ID = user.ID
+    response.Username = user.Username
+    response.Email = user.Email
+    response.Token = tokenResult
+	
+    return c.JSON(http.StatusOK, base.BaseResponse{
+        Status: true,
+        Message: "sukses login",
+        Data: response,
+    })
 }

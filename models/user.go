@@ -55,3 +55,10 @@ func (userResponse *UserResponse) MapFromDB (user User)  {
 
 }
 
+
+type AuthResponse struct {
+	ID        uint           `gorm:"primarykey"`
+	Username  string
+	Email     string
+	Token  	string
+}

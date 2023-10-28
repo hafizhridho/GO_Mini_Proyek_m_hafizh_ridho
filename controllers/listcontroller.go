@@ -4,6 +4,7 @@ import (
 	"latihan/configs"
 	"latihan/models"
 	"latihan/models/base"
+	
 
 	"net/http"
 
@@ -128,5 +129,36 @@ func DeleteList(c echo.Context) error {
         Status: true,
         Message: "Berhasil Menghapus",
         Data: nil, 
+    })
+}
+
+func GetListByID(c echo.Context) error {
+    listID := c.Param("id")
+
+    var existingList models.List
+    if err := configs.DB.First(&existingList, listID).Error; err != nil {
+        return c.JSON(http.StatusNotFound, base.BaseResponse{
+            Status: false,
+            Message: "List not found",
+            Data: nil,
+        })
+    }
+
+    // Di sini, Anda dapat memuat tugas yang terkait dengan daftar ini (opsional)
+    var tasks []models.Tugas
+    if err := configs.DB.Where("list_id = ?", listID).Find(&tasks).Error; err != nil {
+        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
+            Status: false,
+            Message: "Gagal memuat tugas terkait",
+            Data: nil,
+        })
+    }
+
+    // Anda dapat menggabungkan data daftar dengan tugas jika diperlukan
+
+    return c.JSON(http.StatusOK, base.BaseResponse{
+        Status: true,
+        Message: "Berhasil mendapatkan detail list",
+        Data: existingList,
     })
 }
