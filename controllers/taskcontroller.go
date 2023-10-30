@@ -82,7 +82,7 @@ func CreateTugas(c echo.Context) error {
 
 func GetTugas(c echo.Context) error {
     var tasks []models.Tugas
-    if err := configs.DB.Find(&tasks).Error; err != nil {
+    if err := configs.DB.Preload("List").Find(&tasks).Error; err != nil {
         return c.JSON(http.StatusInternalServerError, base.BaseResponse{
             Status: false,
             Message: "gagal mengambil daftar tugas",
@@ -91,7 +91,12 @@ func GetTugas(c echo.Context) error {
     }
 
   
-
+    var  respon []models.TaskResponse
+    for _, task := range tasks {
+        var tasRespon models.TaskResponse
+        tasRespon.MapFROMDb(task)
+        respon = append(respon, tasRespon)
+    }
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status: true,
         Message: "daftar tugas berhasil diambil",
@@ -231,4 +236,23 @@ func DeleteTugas(c echo.Context) error {
         Data: nil,
     })
 }
+func GetTaskById(c echo.Context) error {
+    taskId := c.Param("id")
 
+    var existTask models.Tugas
+    if err := configs.DB.Preload("List").First(&existTask, taskId).Error; err != nil {
+        return c.JSON(http.StatusNotFound, base.BaseResponse{
+            Status: false,
+            Message: "Tugas tidak ditemukan",
+            Data: nil,
+        })
+    }
+
+    // Anda dapat menambahkan logika lain di sini jika diperlukan
+
+    return c.JSON(http.StatusOK, base.BaseResponse{
+        Status: true,
+        Message: "Berhasil mendapatkan detail tugas",
+        Data: existTask,
+    })
+}

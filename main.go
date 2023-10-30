@@ -13,20 +13,22 @@ func main() {
 	configs.InitDb()
 	e := echo.New()
 	e.POST("/users", controllers.Register)
-	e.POST("/login", controllers.Login)
+	e.POST("/login", controllers.LoginController)
 
 	eAUTH := e.Group("")
-	eAUTH.Use(echojwt.JWT([]byte("")))
+	
+	eAUTH.Use(echojwt.JWT([]byte("12345")))
 	eAUTH.POST("/list", controllers.CreateList)
-	e.GET("/list", controllers.GetAllLists)
-	e.PUT("/list/:id", controllers.UpdateList)
-	e.DELETE("/list/:id", controllers.DeleteList)
-	e.GET("/list/:id", controllers.GetListByID)
+	eAUTH.GET("/list", controllers.GetAllLists)
+	eAUTH.PUT("/list/:id", controllers.UpdateList)
+	eAUTH.DELETE("/list/:id", controllers.DeleteList)
+	eAUTH.GET("/list/:id", controllers.GetListByID)
 
-	e.POST("/tugas", controllers.CreateTugas)
-	e.GET("/tugas", controllers.GetTugas)
-	e.PUT("/tugas/:id", controllers.UpdateTask)
-	e.PUT("/tugas/status/:id", controllers.UpdateTugasStatus)
+	eAUTH.POST("/tugas", controllers.CreateTugas)
+	eAUTH.GET("/tugas", controllers.GetTugas)
+	eAUTH.GET("/tugas/:id", controllers.GetTaskById)
+	eAUTH.PUT("/tugas/:id", controllers.UpdateTask)
+	eAUTH.PUT("/tugas/status/:id", controllers.UpdateTugasStatus)
 
 	e.Start(":8000")
 	

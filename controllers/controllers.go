@@ -71,35 +71,38 @@ func Register(c echo.Context) error {
 	})
 }
 
-func Login(c echo.Context) error {
-	var user models.User
-	c.Bind(&user)
-	_ ,err := repositories.Login(user.Password, user.Email)
+func LoginController(c echo.Context) error {
+    var user models.User
+    c.Bind(&user)
+    authenticatedUser, err := repositories.Login(user.Password, user.Email)
+    if err == gorm.ErrRecordNotFound {
+        return c.JSON(http.StatusBadRequest, base.BaseResponse{
+            Status:  false,
+            Message: "Email/Password not Found",
+            Data:    nil,
+        })
+    } else if err != nil {
+        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
+            Status:  false,
+            Message: "Failed to Authenticate",
+            Data:    nil,
+        })
+    } else {
+        // Jika autentikasi berhasil, isi objek user dengan data pengguna yang sesuai
+        user = authenticatedUser
+    }
 
-	if err == gorm.ErrRecordNotFound {
-		return c.JSON(http.StatusBadRequest, base.BaseResponse{
-			Status: false,
-			Message: "email atau password tidak ada",
-			Data: nil,
-		})
-	}	else if err != nil {
-		c.JSON(http.StatusInternalServerError, base.BaseResponse{
-			Status: false,
-			Message: "gagal autentikasi ke database",
-			Data: nil,
-		})
-	}
-	
     tokenResult := middleware.GenerateJWT(user.ID, user.Username)
-    var response models.AuthResponse
+
+    var response models.UserAuthResponse
     response.ID = user.ID
-    response.Username = user.Username
     response.Email = user.Email
+    response.Username = user.Username
     response.Token = tokenResult
-	
+
     return c.JSON(http.StatusOK, base.BaseResponse{
-        Status: true,
-        Message: "sukses login",
-        Data: response,
+        Status:  true,
+        Message: "Success Login",
+        Data:    response,
     })
 }

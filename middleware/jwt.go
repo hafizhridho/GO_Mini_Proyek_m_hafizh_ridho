@@ -1,32 +1,24 @@
 package middleware
 
 import (
-	"log"
-	"os"
 	"time"
-
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type JwtCustomClaims struct {
 	ID   uint   `json:"id"`
-	Name string `json:"name"`
+	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
 
 
-func GenerateJWT (id uint, name string) string {
+func GenerateJWT (id uint, username string) string {
 	var payLoad JwtCustomClaims
 	payLoad.ID = id
-	payLoad.Name = name
+	payLoad.Username = username
 	payLoad.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 72))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payLoad)
-
-	secretKey := os.Getenv("JWT_SECRET")
-	if secretKey == "" {
-		log.Println("jwt secret key tidak di pasang")
-	}
-	t, _ := token.SignedString([]byte(secretKey))
-    return t
+	t, _ := token.SignedString([]byte("12345"))
+	return t
 }

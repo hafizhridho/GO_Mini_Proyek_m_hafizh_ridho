@@ -46,7 +46,9 @@ type TaskResponse struct {
 	Deskripsi string `json:"deskripsi"`
 	Deadline  time.Time `json:"deadline"`
 	Status    bool   `json:"status"`
+	List	List		`json:"list"`
 	ListID    uint   `json:"listID"`
+	
 }
 
 func (taskResponse *TaskResponse) MapFROMDb (task Tugas){
@@ -55,6 +57,14 @@ func (taskResponse *TaskResponse) MapFROMDb (task Tugas){
 	taskResponse.Deadline = task.Deadline
 	taskResponse.Status = task.Status
 	taskResponse.ListID = task.ListID
+	taskResponse.List = task.List
+	taskResponse.List = List{
+        ID:      task.List.ID,
+		ListName: task.List.ListName,
+        
+    }
+	
+	
 }
 
 

@@ -12,9 +12,9 @@ type User struct {
 	CreatedAt time.Time		`gorm:"autoCreateTime"`
 	UpdatedAt time.Time		`gorm:"autoUpdateTime:milli"`
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
-	Username         string
-	Email           string
-	Password         string
+	Username         string		`json:"username"`
+	Email           string		`json:"email"`
+	Password string 
 	List []List `gorm:"foreignKey:UserID"` 
 	
 }
@@ -40,8 +40,8 @@ type UserResponse struct {
 	CreatedAt time.Time      `json:"createdAT"`
 	UpdatedAt time.Time      `json:"updateAT"`
 	Username  string			`json:"username"`
-	Email     string			`json:"Username"`
-	Password  string			`json:"password"`
+	Email     string			`json:"email"`
+	
 
 }
 
@@ -51,14 +51,13 @@ func (userResponse *UserResponse) MapFromDB (user User)  {
 	userResponse.UpdatedAt = user.UpdatedAt
 	userResponse.Username = user.Username
 	userResponse.Email = user.Email
-	userResponse.Password = user.Password
+	
 
 }
 
-
-type AuthResponse struct {
-	ID        uint           `gorm:"primarykey"`
-	Username  string
-	Email     string
-	Token  	string
+type UserAuthResponse struct {
+	ID    uint   `json:"id"`
+	Username  string `json:"username"`
+	Email string `json:"email"`
+	Token string `json:"token"`
 }

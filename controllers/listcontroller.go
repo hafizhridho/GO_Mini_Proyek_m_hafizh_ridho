@@ -131,25 +131,14 @@ func DeleteList(c echo.Context) error {
         Data: nil, 
     })
 }
-
 func GetListByID(c echo.Context) error {
     listID := c.Param("id")
 
     var existingList models.List
-    if err := configs.DB.First(&existingList, listID).Error; err != nil {
+    if err := configs.DB.Preload("User").First(&existingList, listID).Error; err != nil {
         return c.JSON(http.StatusNotFound, base.BaseResponse{
             Status: false,
-            Message: "List not found",
-            Data: nil,
-        })
-    }
-
-    // Di sini, Anda dapat memuat tugas yang terkait dengan daftar ini (opsional)
-    var tasks []models.Tugas
-    if err := configs.DB.Where("list_id = ?", listID).Find(&tasks).Error; err != nil {
-        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
-            Status: false,
-            Message: "Gagal memuat tugas terkait",
+            Message: "Daftar tidak ditemukan",
             Data: nil,
         })
     }
@@ -158,7 +147,7 @@ func GetListByID(c echo.Context) error {
 
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status: true,
-        Message: "Berhasil mendapatkan detail list",
+        Message: "Berhasil mendapatkan detail daftar",
         Data: existingList,
     })
 }
