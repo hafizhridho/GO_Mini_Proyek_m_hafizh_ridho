@@ -4,7 +4,7 @@ import (
 	"latihan/configs"
 	"latihan/models"
 	"latihan/models/base"
-	
+	"time"
 
 	"net/http"
 
@@ -168,46 +168,6 @@ func UpdateTask(c echo.Context) error {
     })
 }
 
-func UpdateTugasStatus(c echo.Context) error {
-    tugasID := c.Param("id")
-    status := c.QueryParam("status")
-
-    var existingTugas models.Tugas
-    if err := configs.DB.First(&existingTugas, tugasID).Error; err != nil {
-        return c.JSON(http.StatusNotFound, base.BaseResponse{
-            Status: false,
-            Message: "Tugas tidak ditemukan",
-            Data: nil,
-        })
-    }
-
-    if status == "selesai" {
-        existingTugas.Status = true
-    } else if status == "belum-selesai" {
-        existingTugas.Status = false
-    } else {
-        return c.JSON(http.StatusBadRequest, base.BaseResponse{
-            Status: false,
-            Message: "Status tidak valid",
-            Data: nil,
-        })
-    }
-
-    if err := configs.DB.Save(&existingTugas).Error; err != nil {
-        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
-            Status: false,
-            Message: "Gagal mengupdate status tugas",
-            Data: nil,
-        })
-    }
-
-    return c.JSON(http.StatusOK, base.BaseResponse{
-        Status: true,
-        Message: "Berhasil mengupdate status tugas",
-        Data: existingTugas,
-    })
-}
-
 func DeleteTugas(c echo.Context) error {
     
     tugasID := c.Param("id")
@@ -254,5 +214,92 @@ func GetTaskById(c echo.Context) error {
         Status: true,
         Message: "Berhasil mendapatkan detail tugas",
         Data: existTask,
+    })
+}
+
+func UpdateTugasStatus(c echo.Context) error {
+    tugasID := c.Param("id")
+    status := c.QueryParam("status")
+
+    var existingTugas models.Tugas
+    if err := configs.DB.First(&existingTugas, tugasID).Error; err != nil {
+        return c.JSON(http.StatusNotFound, base.BaseResponse{
+            Status: false,
+            Message: "Tugas tidak ditemukan",
+            Data: nil,
+        })
+    }
+
+    // Pastikan tugas memiliki informasi deadline
+    if existingTugas.Deadline.IsZero() {
+        return c.JSON(http.StatusBadRequest, base.BaseResponse{
+            Status: false,
+            Message: "Tugas tidak memiliki deadline",
+            Data: nil,
+        })
+    }
+
+    now := time.Now()
+
+    if status == "selesai" {
+        // Tugas selesai
+        existingTugas.Status = true
+        if now.Before(existingTugas.Deadline) {
+            // Tugas dikerjakan tepat waktu
+            return c.JSON(http.StatusOK, base.BaseResponse{
+                Status: true,
+                Message: "Anda mengerjakan tugas tepat waktu",
+                Data: existingTugas,
+            })
+        } else {
+            // Tugas terlambat
+            return c.JSON(http.StatusOK, base.BaseResponse{
+                Status: true,
+                Message: "Anda terlambat menyelesaikan tugas",
+                Data: existingTugas,
+            })
+        }
+    } else if status == "belum-selesai" {
+        // Tugas belum selesai
+        existingTugas.Status = false
+    } else {
+        return c.JSON(http.StatusBadRequest, base.BaseResponse{
+            Status: false,
+            Message: "Status tidak valid",
+            Data: nil,
+        })
+    }
+
+    if err := configs.DB.Save(&existingTugas).Error; err != nil {
+        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
+            Status: false,
+            Message: "Gagal mengupdate status tugas",
+            Data: nil,
+        })
+    }
+
+    return c.JSON(http.StatusOK, base.BaseResponse{
+        Status: true,
+        Message: "Berhasil mengupdate status tugas",
+        Data: existingTugas,
+    })
+}
+
+func GetTasksByListID(c echo.Context) error {
+    listID := c.Param("listID")
+    
+    var tasks []models.Tugas
+    if err := configs.DB.Where("list_id = ?", listID).Find(&tasks).Error; err != nil {
+        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
+            Status:  false,
+            Message: "Failed to retrieve tasks",
+            Data:    nil,
+        })
+    }
+    
+    return c.JSON(http.StatusOK, base.BaseResponse{
+        Status:  true,
+        Message: "Success",
+        Data:    tasks,
     })
 }

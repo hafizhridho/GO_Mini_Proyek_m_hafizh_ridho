@@ -1,18 +1,25 @@
 package repositories
 
 import (
+	"errors"
 	"latihan/configs"
 	"latihan/models"
-)
 
-func Login(password string, email string) (models.User, error) {
+	"gorm.io/gorm"
+)
+func Login(email string) (models.User, error) {
 	var user models.User
 
-result := configs.DB.First(&user, "password = ? AND email = ?", password, email)
+	result := configs.DB.Where("email = ?", email).First(&user)
 
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			// Pengguna tidak ditemukan, kembalikan kesalahan sesuai
+			return models.User{}, gorm.ErrRecordNotFound
+		}
+		// Ada kesalahan lain, kembalikan kesalahan tersebut
 		return models.User{}, result.Error
-
 	}
+
 	return user, nil
 }
