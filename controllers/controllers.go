@@ -87,7 +87,7 @@ func LoginController(c echo.Context) error {
     var user models.User
     c.Bind(&user)
 
-    // Mencari pengguna dengan email yang cocok
+    
     authenticatedUser, err := repositories.Login(user.Email)
     if err == gorm.ErrRecordNotFound {
         return c.JSON(http.StatusBadRequest, base.BaseResponse{
