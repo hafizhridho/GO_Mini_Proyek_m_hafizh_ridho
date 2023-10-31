@@ -17,7 +17,7 @@ func main() {
 
 	eAUTH := e.Group("")
 	
-	eAUTH.Use(echojwt.JWT([]byte("12345")))
+	eAUTH.Use(echojwt.JWT([]byte("secretKey")))
 	eAUTH.POST("/list", controllers.CreateList)
 	eAUTH.GET("/list", controllers.GetAllLists)
 	eAUTH.PUT("/list/:id", controllers.UpdateList)

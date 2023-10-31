@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"os"
 	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -18,7 +20,14 @@ func GenerateJWT (id uint, username string) string {
 	payLoad.Username = username
 	payLoad.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 72))
 
+
+	secretKey := os.Getenv("JWT_SECRET_KEY")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payLoad)
-	t, _ := token.SignedString([]byte("12345"))
-	return t
+    t, err := token.SignedString([]byte(secretKey))
+    if err != nil {
+        // Handle kesalahan jika perlu
+        panic(err)
+    }
+
+    return t
 }
