@@ -12,7 +12,7 @@ import (
 var DB *gorm.DB
 
 func Loadenv() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic("error loading .env")
 	}
