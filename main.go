@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	configs.Loadenv()
+	//configs.Loadenv()
 	configs.InitDb()
 	e := echo.New()
 	e.POST("/users", controllers.Register)

@@ -4,20 +4,19 @@ import (
 	"latihan/models"
 	"os"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
-
+/*
 func Loadenv() {
 	err := godotenv.Load()
 	if err != nil {
 		panic("error loading .env")
 	}
 }
-
+*/
 func InitDb() {
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
