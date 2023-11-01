@@ -77,7 +77,7 @@ func UpdateList(c echo.Context) error {
     if err := c.Bind(&updatedList); err != nil {
         return c.JSON(http.StatusBadRequest, base.BaseResponse{
             Status: false,
-            Message: "Invalid request data",
+            Message: "data invalid",
             Data: nil,
         })
     }
@@ -86,7 +86,7 @@ func UpdateList(c echo.Context) error {
     if err := configs.DB.Preload("User").First(&existingList, listID).Error; err != nil {
         return c.JSON(http.StatusNotFound, base.BaseResponse{
             Status: false,
-            Message: "List not found",
+            Message: "Daftar tidak ditemukan",
             Data: nil,
         })
     }
@@ -97,14 +97,14 @@ func UpdateList(c echo.Context) error {
     if err := configs.DB.Save(&existingList).Error; err != nil {
         return c.JSON(http.StatusInternalServerError, base.BaseResponse{
             Status: false,
-            Message: "Failed to update the list",
+            Message: "Gagal update daftar",
             Data: nil,
         })
     }
 
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status: true,
-        Message: "List updated successfully",
+        Message: "Berhasil update daftar",
         Data: existingList,
     })
 }
@@ -115,7 +115,7 @@ func DeleteList(c echo.Context) error {
     if err := configs.DB.First(&existingList, listID).Error; err != nil {
         return c.JSON(http.StatusNotFound, base.BaseResponse{
             Status: false,
-            Message: "List not found",
+            Message: "daftar tidak ditemukan",
             Data: nil,
         })
     }
@@ -171,7 +171,7 @@ func GetListByUserID(c echo.Context) error {
     
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status:  true,
-        Message: "Success",
+        Message: "Berhasil mendapatkan daftar",
         Data:    daftar,
     })
 }

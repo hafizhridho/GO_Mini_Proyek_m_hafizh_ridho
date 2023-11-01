@@ -111,7 +111,7 @@ func UpdateTask(c echo.Context) error {
     if err := c.Bind(&update); err != nil {
         return c.JSON(http.StatusBadRequest, base.BaseResponse{
             Status: false,
-            Message: "Invalid request data",
+            Message: "  data invalid",
             Data: nil,
         })
     }
@@ -208,7 +208,7 @@ func GetTaskById(c echo.Context) error {
         })
     }
 
-    // Anda dapat menambahkan logika lain di sini jika diperlukan
+   
 
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status: true,
@@ -260,7 +260,7 @@ func UpdateTugasStatus(c echo.Context) error {
             })
         }
     } else if status == "belum-selesai" {
-        // Tugas belum selesai
+        
         existingTugas.Status = false
     } else {
         return c.JSON(http.StatusBadRequest, base.BaseResponse{
@@ -292,14 +292,14 @@ func GetTasksByListID(c echo.Context) error {
     if err := configs.DB.Where("list_id = ?", listID).Find(&tasks).Error; err != nil {
         return c.JSON(http.StatusInternalServerError, base.BaseResponse{
             Status:  false,
-            Message: "Failed to retrieve tasks",
+            Message: "gagal",
             Data:    nil,
         })
     }
     
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status:  true,
-        Message: "Success",
+        Message: "berhasil",
         Data:    tasks,
     })
 }

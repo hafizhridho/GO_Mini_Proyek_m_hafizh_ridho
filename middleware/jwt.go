@@ -25,7 +25,7 @@ func GenerateJWT (id uint, username string) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payLoad)
     t, err := token.SignedString([]byte(secretKey))
     if err != nil {
-        // Handle kesalahan jika perlu
+        
         panic(err)
     }
 
