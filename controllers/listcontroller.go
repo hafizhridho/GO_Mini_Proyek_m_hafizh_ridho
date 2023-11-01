@@ -37,13 +37,17 @@ newList.User = existingUser
 if err := configs.DB.Create(&newList).Error; err != nil {
     return c.JSON(http.StatusInternalServerError, base.BaseResponse{
 		Status: false,
-		Message: "Gagal membuat list",
+		Message: "Gagal membuat daftar",
 		Data: nil,
 	})
 }
 
 
-	return c.JSON(http.StatusCreated, newList)
+	return c.JSON(http.StatusCreated, base.BaseResponse{
+        Status: true,
+        Message: "Berhasil",
+        Data: newList,
+    })
 }
 func GetAllLists(c echo.Context) error {
     var lists []models.List
