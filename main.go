@@ -22,7 +22,6 @@ func main() {
 	eAUTH.GET("/list", controllers.GetAllLists)
 	eAUTH.PUT("/list/:id", controllers.UpdateList)
 	eAUTH.DELETE("/list/:id", controllers.DeleteList)
-	eAUTH.GET("/list/byuser/:userID", controllers.GetListByUserID)
 	eAUTH.GET("/list/:id", controllers.GetListByID)
 	
 
@@ -31,7 +30,7 @@ func main() {
 	eAUTH.GET("/tugas/:id", controllers.GetTaskById)
 	eAUTH.PUT("/tugas/:id", controllers.UpdateTask)
 	eAUTH.PUT("/tugas/status/:id", controllers.UpdateTugasStatus)
-	eAUTH.GET("/tugas/bylist/:listID", controllers.GetTasksByListID)
+	
 
 	e.Start(":8000")
 	

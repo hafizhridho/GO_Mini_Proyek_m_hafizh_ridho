@@ -284,22 +284,3 @@ func UpdateTugasStatus(c echo.Context) error {
         Data: existingTugas,
     })
 }
-
-func GetTasksByListID(c echo.Context) error {
-    listID := c.Param("listID")
-    
-    var tasks []models.Tugas
-    if err := configs.DB.Where("list_id = ?", listID).Find(&tasks).Error; err != nil {
-        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
-            Status:  false,
-            Message: "gagal",
-            Data:    nil,
-        })
-    }
-    
-    return c.JSON(http.StatusOK, base.BaseResponse{
-        Status:  true,
-        Message: "berhasil",
-        Data:    tasks,
-    })
-}

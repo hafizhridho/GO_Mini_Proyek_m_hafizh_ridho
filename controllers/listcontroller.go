@@ -156,22 +156,3 @@ func GetListByID(c echo.Context) error {
     })
 }
 
-
-func GetListByUserID(c echo.Context) error {
-    userID := c.Param("userID")
-    
-    var daftar []models.List
-    if err := configs.DB.Where("user_id = ?", userID).Find(&daftar).Error; err != nil {
-        return c.JSON(http.StatusInternalServerError, base.BaseResponse{
-            Status:  false,
-            Message: "gagal mencari daftar",
-            Data:    nil,
-        })
-    }
-    
-    return c.JSON(http.StatusOK, base.BaseResponse{
-        Status:  true,
-        Message: "Berhasil mendapatkan daftar",
-        Data:    daftar,
-    })
-}
