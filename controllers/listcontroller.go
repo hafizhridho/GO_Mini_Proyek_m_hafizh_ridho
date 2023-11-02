@@ -147,7 +147,7 @@ func GetListByID(c echo.Context) error {
         })
     }
 
-    // Anda dapat menggabungkan data daftar dengan tugas jika diperlukan
+   
 
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status: true,
