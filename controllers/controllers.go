@@ -41,7 +41,7 @@ func Register(c echo.Context) error {
         })
     }
 
-    // Hash kata sandi menggunakan bcrypt
+    // Hash password menggunakan bcrypt
     hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
     if err != nil {
         return c.JSON(http.StatusInternalServerError, base.BaseResponse{

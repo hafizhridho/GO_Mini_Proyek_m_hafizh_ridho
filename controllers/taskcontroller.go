@@ -230,7 +230,7 @@ func UpdateTugasStatus(c echo.Context) error {
         })
     }
 
-    // Pastikan tugas memiliki informasi deadline
+    
     if existingTugas.Deadline.IsZero() {
         return c.JSON(http.StatusBadRequest, base.BaseResponse{
             Status: false,
