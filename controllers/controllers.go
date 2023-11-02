@@ -46,7 +46,7 @@ func Register(c echo.Context) error {
     if err != nil {
         return c.JSON(http.StatusInternalServerError, base.BaseResponse{
             Status: false,
-            Message: "Error hashing password",
+            Message: "Gagal hashing password",
             Data: nil,
         })
     }
@@ -92,22 +92,22 @@ func LoginController(c echo.Context) error {
     if err == gorm.ErrRecordNotFound {
         return c.JSON(http.StatusBadRequest, base.BaseResponse{
             Status:  false,
-            Message: "Email not found",
+            Message: "Email tidak ditemukan",
             Data:    nil,
         })
     } else if err != nil {
         return c.JSON(http.StatusInternalServerError, base.BaseResponse{
             Status:  false,
-            Message: "Failed to authenticate",
+            Message: "Gagal  autentikasi",
             Data:    nil,
         })
     }
 
-    // Memverifikasi kata sandi menggunakan bcrypt
+    
     if err := bcrypt.CompareHashAndPassword([]byte(authenticatedUser.Password), []byte(user.Password)); err != nil {
         return c.JSON(http.StatusUnauthorized, base.BaseResponse{
             Status:  false,
-            Message: "Invalid Password",
+            Message: "Password salah",
             Data:    nil,
         })
     }
@@ -122,7 +122,7 @@ func LoginController(c echo.Context) error {
 
     return c.JSON(http.StatusOK, base.BaseResponse{
         Status:  true,
-        Message: "Success Login",
+        Message: "Berhasil Login",
         Data:    response,
     })
 }

@@ -23,6 +23,7 @@ func main() {
 	eAUTH.PUT("/list/:id", controllers.UpdateList)
 	eAUTH.DELETE("/list/:id", controllers.DeleteList)
 	eAUTH.GET("/list/:id", controllers.GetListByID)
+	eAUTH.GET("/list/byuser/:userID", controllers.GetListByUserID)
 
 	eAUTH.POST("/tugas", controllers.CreateTugas)
 	eAUTH.GET("/tugas", controllers.GetTugas)

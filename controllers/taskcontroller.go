@@ -16,7 +16,7 @@ func CreateTugas(c echo.Context) error {
     if err := c.Bind(&request); err != nil {
         return c.JSON(http.StatusBadRequest, base.BaseResponse{
 			Status: false,
-			Message: "invalid request data",
+			Message: "data invalid",
 			Data: nil,
 		})
     }
